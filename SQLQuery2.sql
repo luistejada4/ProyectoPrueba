@@ -1,0 +1,167 @@
+﻿/*    ==Scripting Parameters==
+
+    Source Server Version : SQL Server 2014 (12.0.2000)
+    Source Database Engine Edition : Microsoft SQL Server Express Edition
+    Source Database Engine Type : Standalone SQL Server
+
+    Target Server Version : SQL Server 2017
+    Target Database Engine Edition : Microsoft SQL Server Standard Edition
+    Target Database Engine Type : Standalone SQL Server
+*/
+USE [master]
+GO
+/****** Object:  Database [proyecto]    Script Date: 28/9/17 10:41:34 ******/
+CREATE DATABASE [proyecto]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'proyecto', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\proyecto.mdf' , SIZE = 4288KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'proyecto_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\proyecto_log.ldf' , SIZE = 1072KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+ALTER DATABASE [proyecto] SET COMPATIBILITY_LEVEL = 120
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [proyecto].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [proyecto] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [proyecto] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [proyecto] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [proyecto] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [proyecto] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [proyecto] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [proyecto] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [proyecto] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [proyecto] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [proyecto] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [proyecto] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [proyecto] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [proyecto] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [proyecto] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [proyecto] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [proyecto] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [proyecto] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [proyecto] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [proyecto] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [proyecto] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [proyecto] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [proyecto] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [proyecto] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [proyecto] SET  MULTI_USER 
+GO
+ALTER DATABASE [proyecto] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [proyecto] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [proyecto] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [proyecto] SET TARGET_RECOVERY_TIME = 0 SECONDS 
+GO
+ALTER DATABASE [proyecto] SET DELAYED_DURABILITY = DISABLED 
+GO
+USE [proyecto]
+GO
+/****** Object:  Table [dbo].[Articulos]    Script Date: 28/9/17 10:41:34 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Articulos](
+	[Codigo] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [varchar](60) NOT NULL,
+	[Costo] [money] NOT NULL,
+	[Ganancia] [money] NOT NULL,
+	[Precio] [money] NULL,
+	[Itbis] [float] NOT NULL,
+	[Existencia] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Codigo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Clientes]    Script Date: 28/9/17 10:41:34 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Clientes](
+	[Codigo] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [varchar](60) NOT NULL,
+	[Direccion] [varchar](120) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Codigo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Items]    Script Date: 28/9/17 10:41:34 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Items](
+	[Codigo] [int] IDENTITY(1,1) NOT NULL,
+	[CodigoPedido] [int] NULL,
+	[CodigoArticulo] [int] NULL,
+	[Precio] [money] NOT NULL,
+	[Cantidad] [int] NOT NULL,
+	[Itbis] [money] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Codigo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Pedidos]    Script Date: 28/9/17 10:41:34 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Pedidos](
+	[Codigo] [int] IDENTITY(1,1) NOT NULL,
+	[ClienteCodigo] [int] NOT NULL,
+	[Fecha] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Codigo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Items]  WITH CHECK ADD FOREIGN KEY([CodigoArticulo])
+REFERENCES [dbo].[Articulos] ([Codigo])
+GO
+ALTER TABLE [dbo].[Items]  WITH CHECK ADD FOREIGN KEY([CodigoPedido])
+REFERENCES [dbo].[Pedidos] ([Codigo])
+GO
+ALTER TABLE [dbo].[Pedidos]  WITH CHECK ADD FOREIGN KEY([ClienteCodigo])
+REFERENCES [dbo].[Clientes] ([Codigo])
+GO
+USE [master]
+GO
+ALTER DATABASE [proyecto] SET  READ_WRITE 
+GO
